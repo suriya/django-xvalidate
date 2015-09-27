@@ -6,7 +6,7 @@ django-xvalidate
 django-xvalidate allows you to declare cross-field validators within a
 Django model.
 
-As an example, consider a Django model named `Event`.
+As an example, consider a Django model named :code:`Event`.
 
 .. code:: python
 
@@ -36,5 +36,6 @@ date as follows:
                   message='The start date should precede the end date')
           ]
 
-`XValidatedModel` ensures that this specification is maintained invoking
-`Event.clean()` and raises `ValidationError` as appropriate.
+:code:`XValidatedModel` ensures that this specification is maintained
+invoking :code:`Event.clean()` and raises :code:`ValidationError` as
+appropriate.
