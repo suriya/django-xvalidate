@@ -20,6 +20,7 @@ setup(
     author_email='suriya@alumni.cs.utexas.edu',
     install_requires=[
         'Django >= 1.8',
+        'six',
     ],
     classifiers=[
         'Environment :: Web Environment',
