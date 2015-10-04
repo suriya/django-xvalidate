@@ -7,6 +7,7 @@ class Organizer(XValidatedModel, models.Model):
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
 
+
 class Event(XValidatedModel, models.Model):
     organizer = models.ForeignKey(Organizer)
     title = models.CharField(max_length=255)
