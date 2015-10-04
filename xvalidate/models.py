@@ -16,7 +16,7 @@ class XValidatedModel(models.Model):
         abstract = True
 
     class XVMeta:
-        spec = None
+        spec = []
 
     @classmethod
     def _check_xvmeta(cls, **kwargs):
@@ -51,12 +51,7 @@ class XValidatedModel(models.Model):
             raise ValidationError(message)
 
     def _clean_xvmeta(self):
-        spec = self.XVMeta.spec
-        if not spec:
-            return
-        if not isinstance(spec, (list, tuple)):
-            spec = [spec]
-        for s in spec:
+        for s in self.XVMeta.spec:
             result = s._clean(self)
             self._raise_validation_error_if_needed(result)
 
@@ -64,12 +59,8 @@ class XValidatedModel(models.Model):
     def check(cls, **kwargs):
         errors = super(XValidatedModel, cls).check(**kwargs)
         errors.extend(cls._check_xvmeta(**kwargs))
-        spec = cls.XVMeta.spec
-        if spec:
-            if not isinstance(spec, (list, tuple)):
-                spec = [spec]
-            for s in spec:
-                errors.extend(s._check(cls))
+        for s in cls.XVMeta.spec:
+            errors.extend(s._check(cls))
         return errors
 
     def clean(self):
