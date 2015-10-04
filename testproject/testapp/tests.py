@@ -21,5 +21,6 @@ class EventTestCase(TestCase):
                 title='Our bad event',
                 start_date=TODAY,
                 end_date=YESTERDAY).full_clean()
-        self.assertIn('The start date should precede the end date',
+        self.assertIn(
+            'The start date should precede the end date',
             context.exception.message_dict['start_date'][0])

@@ -9,7 +9,6 @@ from django.db.models.constants import LOOKUP_SEP
 from django.db.models import (ForeignKey, OneToOneField, )
 from django.db.models.fields import FieldDoesNotExist
 from django.utils.decorators import classonlymethod
-from django.core.exceptions import ValidationError
 from django.core import checks
 
 __all__ = (
