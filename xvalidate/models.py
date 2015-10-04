@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.utils.decorators import classonlymethod
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (ValidationError, NON_FIELD_ERRORS)
 from django.core import checks
 from .validators import AbnormalValues
 
@@ -43,7 +43,12 @@ class XValidatedModel(models.Model):
         if AbnormalValues.is_abnormal(value):
             return
         if not value:
-            raise ValidationError(result['message'])
+            message = result['message']
+            if not message:
+                message = {
+                    NON_FIELD_ERRORS: "Validation failed, but no message specified"
+                }
+            raise ValidationError(message)
 
     def _clean_xvmeta(self):
         spec = self.XVMeta.spec

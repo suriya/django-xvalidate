@@ -104,6 +104,33 @@ class XValidateExpr(six.with_metaclass(abc.ABCMeta, object)):
         """
         raise ValueError('Could not find field for message.')
 
+    def __inv__(self):
+        return XFalse(self)
+
+    def or_(self, e2):
+        return XOr(self, e2)
+
+    def and_(self, e2):
+        return XAnd(self, e2)
+
+    def __ne__(self, e2):
+        return XNe(self, e2)
+
+    def __eq__(self, e2):
+        return XEq(self, e2)
+
+    def __le__(self, e2):
+        return XLe(self, e2)
+
+    def __ge__(self, e2):
+        return XGe(self, e2)
+
+    def __lt__(self, e2):
+        return XLt(self, e2)
+
+    def __gt__(self, e2):
+        return XGt(self, e2)
+
 
 class XField(XValidateExpr):
     def __init__(self, fieldspec, *args, **kwargs):
