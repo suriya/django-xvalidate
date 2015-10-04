@@ -4,9 +4,9 @@ python:
   - "3.4"
   - "3.5"
 env:
-  - DJANGO=1.8.5
+  - DJANGO_VERSION=1.8.5
 install:
-  - pip install flake8
+  - pip install flake8 Django==$DJANGO_VERSION six
 before_script:
   - flake8
 script:
