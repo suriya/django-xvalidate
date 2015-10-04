@@ -17,6 +17,9 @@ class EventTestCase(TestCase):
         self.inactive = Organizer(name='In Active', is_active=False)
         self.inactive.save()
 
+    def test_model_check(self):
+        self.assertEqual(Event.check(), [])
+
     def test_organizer(self):
         with self.assertRaises(ValidationError) as context:
             Event(
