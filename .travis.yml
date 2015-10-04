@@ -14,7 +14,7 @@ before_script:
   - flake8
 script:
   - cd testproject
-  - coverage run ./manage.py test
+  - coverage run --source=.. ./manage.py test
 # Report to coveralls
 after_success:
   - coveralls
