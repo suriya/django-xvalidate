@@ -5,6 +5,8 @@ django-xvalidate
 
 .. image:: https://travis-ci.org/suriya/django-xvalidate.svg?branch=master
     :target: https://travis-ci.org/suriya/django-xvalidate
+.. image:: https://coveralls.io/repos/suriya/django-xvalidate/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/suriya/django-xvalidate?branch=master
 
 django-xvalidate allows you to declare cross-field validators within a
 Django model.
