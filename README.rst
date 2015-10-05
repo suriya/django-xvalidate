@@ -7,6 +7,9 @@ django-xvalidate
     :target: https://travis-ci.org/suriya/django-xvalidate
 .. image:: https://coveralls.io/repos/suriya/django-xvalidate/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/suriya/django-xvalidate?branch=master
+.. image:: https://img.shields.io/pypi/v/django-xvalidate.svg
+    :target: https://pypi.python.org/pypi/django-xvalidate
+    :alt: Latest PyPI version
 
 django-xvalidate allows you to declare cross-field validators within a
 Django model.
