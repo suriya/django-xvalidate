@@ -16,6 +16,18 @@ class Event(XValidatedModel, models.Model):
 
     class XVMeta(XValidatedModel.XVMeta):
         spec = [
-            XTrue('organizer__is_active', message='The Organizer is not active'),
+            XTrue('organizer__is_active').message('The Organizer is not active'),
             XF('start_date') <= 'end_date',
+        ]
+
+
+class Registrant(XValidatedModel, models.Model):
+    name = models.CharField(max_length=255)
+    event = models.ForeignKey(Event)
+    registration_date = models.DateField()
+
+    class XVMeta(XValidatedModel.XVMeta):
+        spec = [
+            (XF('registration_date') <= 'event__end_date').message(
+                'Must register before the event ends'),
         ]

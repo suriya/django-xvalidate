@@ -72,12 +72,20 @@ def get_field(obj, fieldspec):
 
 
 class XValidateExpr(six.with_metaclass(abc.ABCMeta, object)):
-    def __init__(self, message={}, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        self._message = {}
+
+    def message(self, message):
+        """
+        Set the message to raise with the ValidationError when this
+        constraint is violated.
+        """
         if isinstance(message, six.string_types):
             message = {
                 self._get_field_for_message(): message
             }
-        self.message = message
+        self._message = message
+        return self
 
     @abc.abstractmethod
     def _clean(self, instance):
@@ -157,7 +165,7 @@ class XField(XValidateExpr):
     def _clean(self, instance):
         return {
             'value': get_field(instance, self.fieldspec),
-            'message': self.message,
+            'message': self._message,
         }
 XF = XField
 
@@ -187,7 +195,7 @@ class XValue(XValidateExpr):
     def _clean(self, instance):
         return {
             'value': self.value,
-            'message': self.message,
+            'message': self._message,
         }
 
 
@@ -231,7 +239,7 @@ class XNaryExpr(XValidateExpr):
                     raise
         return {
             'value': satisfied,
-            'message': self.message
+            'message': self._message
         }
 
 
