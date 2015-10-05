@@ -191,36 +191,41 @@ class XValue(XValidateExpr):
         }
 
 
-class XBooleanExpr(XValidateExpr):
+class XNaryExpr(XValidateExpr):
+    """
+    An expression with N arguments.
+    """
+    @abc.abstractproperty
+    def ARITY(self):
+        pass
+
     @abc.abstractproperty
     def operator_func(self):
         pass
 
-    def __init__(self, left, right, *args, **kwargs):
-        self.left = XValidateExpr.make_xvalidateexpr(left)
-        self.right = XValidateExpr.make_xvalidateexpr(right)
-        super(XBooleanExpr, self).__init__(*args, **kwargs)
+    def __init__(self, operands, *args, **kwargs):
+        if len(operands) != self.ARITY:
+            raise ValueError("The number of operands does not match ARITY")
+        self.operands = [XValidateExpr.make_xvalidateexpr(o) for o in operands]
+        super(XNaryExpr, self).__init__(*args, **kwargs)
 
     def _get_field_for_message(self):
-        return self.left._get_field_for_message()
+        return self.operands[0]._get_field_for_message()
 
     def _check(self, model, **kwargs):
-        return (
-            self.left._check(model, **kwargs) +
-            self.right._check(model, **kwargs)
-        )
+        return sum([o._check(model, **kwargs) for o in self.operands], [])
 
     def _clean(self, instance):
-        cchildren = [self.left._clean(instance), self.right._clean(instance)]
+        cchildren = [o._clean(instance) for o in self.operands]
         cchildren = [cc for cc in cchildren if (not AbnormalValues.is_abnormal(cc['value']))]
-        if len(cchildren) < 2:
+        if len(cchildren) < self.ARITY:
             satisfied = True
         else:
-            (left, right) = cchildren
+            values = [o['value'] for o in cchildren]
             try:
-                satisfied = self.operator_func(left['value'], right['value'])
+                satisfied = self.operator_func(*values)
             except TypeError:
-                if (left is None) or (right is None):
+                if any((v is None) for v in values):
                     satisfied = AbnormalValues.TYPE_ERROR
                 else:
                     raise
@@ -230,33 +235,18 @@ class XBooleanExpr(XValidateExpr):
         }
 
 
-class XUnaryExpr(XValidateExpr):
-    @abc.abstractproperty
-    def operator_func(self):
-        pass
+class XBinaryExpr(XNaryExpr):
+    ARITY = 2
+
+    def __init__(self, left, right, *args, **kwargs):
+        super(XBinaryExpr, self).__init__([left, right], *args, **kwargs)
+
+
+class XUnaryExpr(XNaryExpr):
+    ARITY = 1
 
     def __init__(self, left, *args, **kwargs):
-        self.left = XValidateExpr.make_xvalidateexpr(left)
-        super(XUnaryExpr, self).__init__(*args, **kwargs)
-
-    def _check(self, model, **kwargs):
-        return self.left._check(model, **kwargs)
-
-    def _get_field_for_message(self):
-        return self.left._get_field_for_message()
-
-    def _clean(self, instance):
-        cchildren = [self.left._clean(instance), ]
-        cchildren = [cc for cc in cchildren if (not AbnormalValues.is_abnormal(cc['value']))]
-        if len(cchildren) < 1:
-            satisfied = True
-        else:
-            (left, ) = cchildren
-            satisfied = self.operator_func(left['value'])
-        return {
-            'value': satisfied,
-            'message': self.message
-        }
+        super(XUnaryExpr, self).__init__([left], *args, **kwargs)
 
 
 class XTrue(XUnaryExpr):
@@ -278,40 +268,40 @@ class XNotNone(XUnaryExpr):
         return (x is not None)
 
 
-class XEq(XBooleanExpr):
+class XEq(XBinaryExpr):
     operator_func = operator.eq
 
 
-class XNe(XBooleanExpr):
+class XNe(XBinaryExpr):
     operator_func = operator.ne
 
 
-class XLt(XBooleanExpr):
+class XLt(XBinaryExpr):
     operator_func = operator.lt
 
 
-class XGt(XBooleanExpr):
+class XGt(XBinaryExpr):
     operator_func = operator.gt
 
 
-class XLe(XBooleanExpr):
+class XLe(XBinaryExpr):
     operator_func = operator.le
 
 
-class XGe(XBooleanExpr):
+class XGe(XBinaryExpr):
     operator_func = operator.ge
 
 
-class XAnd(XBooleanExpr):
+class XAnd(XBinaryExpr):
     def operator_func(self, a, b):
         return (a and b)
 
 
-class XOr(XBooleanExpr):
+class XOr(XBinaryExpr):
     def operator_func(self, a, b):
         return (a or b)
 
 
-class XImplies(XBooleanExpr):
+class XImplies(XBinaryExpr):
     def operator_func(self, a, b):
         return (not a or b)
