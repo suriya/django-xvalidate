@@ -112,13 +112,13 @@ class XValidateExpr(six.with_metaclass(abc.ABCMeta, object)):
         """
         raise ValueError('Could not find field for message.')
 
-    def __inv__(self):
+    def __invert__(self):
         return XFalse(self)
 
-    def or_(self, e2):
+    def __or__(self, e2):
         return XOr(self, e2)
 
-    def and_(self, e2):
+    def __and__(self, e2):
         return XAnd(self, e2)
 
     def __ne__(self, e2):

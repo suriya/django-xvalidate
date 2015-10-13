@@ -40,8 +40,8 @@ date as follows:
 
       class XVMeta(XValidatedModel.XVMeta):
           spec = [
-              XLe('start_date', 'end_date',
-                  message='The start date should precede the end date')
+              XLe('start_date', 'end_date').message(
+                  'The start date should precede the end date')
           ]
 
 :code:`XValidatedModel` ensures that this specification is maintained
