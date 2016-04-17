@@ -72,6 +72,7 @@ sugar to your declarations making them very easy to read. For instance,
 you could specify:
 
 .. code:: python
+
     ((XF('end_date') - 'start_date') > datetime.timedelta(days=4)).message(
         'Event should last at least 5 days'
     )
@@ -81,5 +82,6 @@ syntax to dereference related objects, enabling succinct definitions such
 as the following
 
 .. code:: python
+
     (XF('registration_date') <= 'event__end_date').message(
         'Must register before the event ends')
