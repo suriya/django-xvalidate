@@ -149,9 +149,6 @@ class XValidateExpr(six.with_metaclass(abc.ABCMeta, object)):
     def __mul__(self, e2):
         return XMul(self, e2)
 
-    def __div__(self, e2):
-        return XDiv(self, e2)
-
 
 class XField(XValidateExpr):
     def __init__(self, fieldspec, *args, **kwargs):
@@ -341,7 +338,3 @@ class XSub(XBinaryExpr):
 
 class XMul(XBinaryExpr):
     operator_func = operator.mul
-
-
-class XDiv(XBinaryExpr):
-    operator_func = operator.div
