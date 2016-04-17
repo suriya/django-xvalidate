@@ -6,8 +6,10 @@ from django.core.exceptions import (ValidationError, NON_FIELD_ERRORS)
 from .models import Organizer, Event, Registrant
 
 TODAY = datetime.date.today()
+TODAY_M7 = TODAY - datetime.timedelta(days=7)
 YESTERDAY = TODAY - datetime.timedelta(days=1)
 TOMORROW = TODAY + datetime.timedelta(days=1)
+TODAY_P7 = TODAY + datetime.timedelta(days=7)
 
 
 class EventTestCase(TestCase):
@@ -34,7 +36,7 @@ class EventTestCase(TestCase):
             organizer=self.active,
             title='Our active event',
             start_date=TODAY,
-            end_date=TOMORROW).full_clean()
+            end_date=TODAY_P7).full_clean()
 
     def test_dates(self):
         with self.assertRaises(ValidationError) as context:
@@ -46,11 +48,20 @@ class EventTestCase(TestCase):
         self.assertIn(
             'Validation failed, but no message specified',
             context.exception.message_dict[NON_FIELD_ERRORS])
+        with self.assertRaises(ValidationError) as context:
+            Event(
+                organizer=self.active,
+                title='Our short event',
+                start_date=TODAY,
+                end_date=TOMORROW).full_clean()
+        self.assertIn(
+            'Event should last at least 5 days',
+            context.exception.message_dict['end_date'])
 
     def test_registrant(self):
         event = Event(
             organizer=self.active, title='Our completed event',
-            start_date=YESTERDAY, end_date=YESTERDAY)
+            start_date=TODAY_M7, end_date=YESTERDAY)
         event.full_clean()
         event.save()
         with self.assertRaises(ValidationError) as context:

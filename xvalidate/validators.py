@@ -4,6 +4,7 @@ import six
 import abc
 import decimal
 import operator
+import datetime
 from django.db import models
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models import (ForeignKey, OneToOneField, )
@@ -139,6 +140,18 @@ class XValidateExpr(six.with_metaclass(abc.ABCMeta, object)):
     def __gt__(self, e2):
         return XGt(self, e2)
 
+    def __add__(self, e2):
+        return XAdd(self, e2)
+
+    def __sub__(self, e2):
+        return XSub(self, e2)
+
+    def __mul__(self, e2):
+        return XMul(self, e2)
+
+    def __div__(self, e2):
+        return XDiv(self, e2)
+
 
 class XField(XValidateExpr):
     def __init__(self, fieldspec, *args, **kwargs):
@@ -180,7 +193,10 @@ class XValue(XValidateExpr):
 
     @classmethod
     def can_make_xvalue(cls, o):
-        number_types = six.integer_types + (decimal.Decimal, float, )
+        number_types = six.integer_types + (
+            decimal.Decimal, float, datetime.date, datetime.datetime,
+            datetime.timedelta
+        )
         return isinstance(o, number_types)
 
     @classmethod
@@ -313,3 +329,19 @@ class XOr(XBinaryExpr):
 class XImplies(XBinaryExpr):
     def operator_func(self, a, b):
         return (not a or b)
+
+
+class XAdd(XBinaryExpr):
+    operator_func = operator.add
+
+
+class XSub(XBinaryExpr):
+    operator_func = operator.sub
+
+
+class XMul(XBinaryExpr):
+    operator_func = operator.mul
+
+
+class XDiv(XBinaryExpr):
+    operator_func = operator.div

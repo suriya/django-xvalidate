@@ -1,4 +1,5 @@
 
+import datetime
 from django.db import models
 from xvalidate import XValidatedModel, XF, XTrue
 
@@ -18,6 +19,9 @@ class Event(XValidatedModel, models.Model):
         spec = [
             XTrue('organizer__is_active').message('The Organizer is not active'),
             XF('start_date') <= 'end_date',
+            ((XF('end_date') - 'start_date') > datetime.timedelta(days=5)).message(
+                'Event should last at least 5 days'
+            ),
         ]
 
 
