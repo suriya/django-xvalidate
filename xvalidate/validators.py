@@ -190,7 +190,7 @@ class XValue(XValidateExpr):
 
     @classmethod
     def can_make_xvalue(cls, o):
-        number_types = six.integer_types + (
+        number_types = six.string_types + six.integer_types + (
             decimal.Decimal, float, datetime.date, datetime.datetime,
             datetime.timedelta
         )
