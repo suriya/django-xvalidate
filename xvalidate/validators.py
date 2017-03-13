@@ -177,6 +177,8 @@ class XField(XValidateExpr):
             'value': get_field(instance, self.fieldspec),
             'message': self._message,
         }
+
+
 XF = XField
 
 
