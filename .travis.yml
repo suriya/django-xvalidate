@@ -4,7 +4,7 @@ python:
 # - "3.4"
   - "3.5"
 env:
-  - DJANGO_VERSION=1.8.5
+  - DJANGO_VERSION=1.10.6
 # Install our package "." http://stackoverflow.com/a/27091478
 install:
   - pip install flake8

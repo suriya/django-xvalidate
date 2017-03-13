@@ -52,7 +52,7 @@ def get_model_field(model, fieldspec):
                 return None
             opts = rel.related_model._meta
         try:
-            (rel, _, _, _) = opts.get_field_by_name(name)
+            rel = opts.get_field(name)
         except FieldDoesNotExist:
             return None
     return rel
